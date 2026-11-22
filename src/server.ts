@@ -1,37 +1,11 @@
-import express, { Application, Request, Response } from "express"
-import {Pool} from 'pg';
-const app : Application= express()
-const port = 5000
+import app from "./app";
+import config from "./config";
+import { initDB } from "./db";
 
-app.use(express.json())
-app.use(express.text())
-app.use(express.urlencoded({extended:true}))
-
-const pool = new Pool({
-  connectionString : "postgresql://neondb_owner:npg_wZCmA5LSO3NK@ep-divine-waterfall-b35kceq7.c-4.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+const main = async ( )=>{
+  initDB();
+  app.listen(config.port, () => {
+  console.log(`The Express Server is running on port ${config.port}`)
 })
-console.log(pool)
-
-app.get('/', (req: Request, res: Response) => {
-  // console.log(req);
-  // res.send('This is root route')
-  res.status(200).json({
-    success: true,
-    message:"This is root route",
-    author: "PH",
-  })
-});
-
-app.post("/", async(req : Request, res: Response)=>{
-  // console.log(req.body);
-  const body = req.body;
-  res.status(200).json({
-    success: true,
-    message:"This is test api!!",
-    data: body,
-  });
-})
-
-app.listen(port, () => {
-  console.log(`The Express Server is running on port ${port}`)
-})
+}
+main()
